@@ -71,7 +71,7 @@ https://github.com/dmswn1004/WANTED-FE-CHALLENGE/assets/101851472/72c97134-db3e-
 
 #### 🔎 코드 설명
 **1. 라우터 설정**
-최신 버전의 react-router-dom 설치
+최신 버전의 react-router-dom 설치 (React Router v6)
 ```bush
 npm install react-router-dom --save
 ```
@@ -99,15 +99,49 @@ import './App.css'
 
 function App() {
   return (
-    <div>
-      <Routes>
-        <Route path="/" element={<Root />} />
-        <Route path="/about" element={<About />} />
-      </Routes>
-    </div>
+    <Routes>
+      <Route path="/" element={<Root />} />
+      <Route path="/about" element={<About />} />
+    </Routes>
   )
 }
-
-export default App
 ```
 
+**3. 코드 설명**
+- useRouter 훅
+```tsx
+import { useNavigate } from 'react-router-dom';
+
+const useRouter = () => {
+    const navigate = useNavigate();
+
+    const push = (path: string):void => {
+        navigate(path);
+    };
+    
+    return { push };
+}
+```
+
+push 함수는 매개변수로 받은 path를 사용해 페이지를 전환합니다. <br>
+useNavigate 함수를 호출해 전달받은 path, 즉 페이지 전환을 원하는 경로로 페이지가 전환됩니다.
+
+> Root.tsx
+```tsx
+import useRouter from '../hooks/useRouter';
+
+const Root = () => {
+    const { push } = useRouter();
+
+    return (
+        <div>
+            <h1>Root</h1>
+            <button onClick={()=>(push('/about'))}>about</button>
+        </div>
+    )
+}
+
+export default Root;
+```
+
+useRouter를 통해 가져온 push 함수를 사용하여 페이지 전환을 수행합니다. <br>
