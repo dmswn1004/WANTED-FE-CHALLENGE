@@ -54,6 +54,9 @@ https://github.com/dmswn1004/WANTED-FE-CHALLENGE/assets/101851472/72c97134-db3e-
 📦src
  ┣ 📂assets
  ┃ ┗ 📜react.svg
+ ┣ 📂components
+ ┃ ┣ 📜Route.tsx
+ ┃ ┗ 📜Router.tsx
  ┣ 📂hooks
  ┃ ┗ 📜useRouter.tsx
  ┣ 📂pages
@@ -66,82 +69,9 @@ https://github.com/dmswn1004/WANTED-FE-CHALLENGE/assets/101851472/72c97134-db3e-
  ┗ 📜vite-env.d.ts
 ```
 
+- components : Router&Route 컴포넌트
 - hooks : 커스텀 hook
 - pages 폴더 : 라우터로 랜더링되는 페이지 컴포넌트
 
 #### 🔎 코드 설명
-**1. 라우터 설정**
-최신 버전의 react-router-dom 설치 (React Router v6)
-```bush
-npm install react-router-dom --save
-```
 
-**2. setting**
-> main.tsx
-```tsx
-import { BrowserRouter } from 'react-router-dom';
-
-ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
-  </React.StrictMode>,
-)
-```
-
-> App.tsx
-```tsx
-import { Route, Routes } from 'react-router-dom';
-import Root from './pages/Root'
-import About from './pages/About';
-import './App.css'
-
-function App() {
-  return (
-    <Routes>
-      <Route path="/" element={<Root />} />
-      <Route path="/about" element={<About />} />
-    </Routes>
-  )
-}
-```
-
-**3. 코드 설명**
-- useRouter 훅
-```tsx
-import { useNavigate } from 'react-router-dom';
-
-const useRouter = () => {
-    const navigate = useNavigate();
-
-    const push = (path: string):void => {
-        navigate(path);
-    };
-    
-    return { push };
-}
-```
-
-push 함수는 매개변수로 받은 path를 사용해 페이지를 전환합니다. <br>
-useNavigate 함수를 호출해 전달받은 path, 즉 페이지 전환을 원하는 경로로 페이지가 전환됩니다.
-
-> Root.tsx
-```tsx
-import useRouter from '../hooks/useRouter';
-
-const Root = () => {
-    const { push } = useRouter();
-
-    return (
-        <div>
-            <h1>Root</h1>
-            <button onClick={()=>(push('/about'))}>about</button>
-        </div>
-    )
-}
-
-export default Root;
-```
-
-useRouter를 통해 가져온 push 함수를 사용하여 페이지 전환을 수행합니다. <br>
