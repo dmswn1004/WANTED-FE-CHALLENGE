@@ -74,4 +74,67 @@ https://github.com/dmswn1004/WANTED-FE-CHALLENGE/assets/101851472/72c97134-db3e-
 - pages 폴더 : 라우터로 랜더링되는 페이지 컴포넌트
 
 #### 🔎 코드 설명
+> Router.tsx
+```tsx
+interface RouterProps {
+    children: React.ReactNode;
+}
 
+const Router = ({ children }: RouterProps) => {
+    const [path, setPath] = useState(location.pathname);
+
+    const routes = React.Children.toArray(children) as React.ReactElement<RouteProps>[];
+
+    useEffect(() => {
+        const handleSetPath = () => {
+            setPath(window.location.pathname)
+        };
+
+        window.addEventListener('popstate', handleSetPath);
+
+        return () => {
+            window.removeEventListener('popstate', handleSetPath);
+        };
+    }, []);
+
+    return routes.find((route) => route.props.path === path);
+
+}
+
+export default Router;
+```
+
+Router 컴포넌트는 현재 경로에 따라 적절한 컴포넌트를 렌더링 하는 역할을 합니다.
+useEffeat 훅을 사용해 useRouter 커스텀 훅에서 보낸 **popstate 이벤트**를 감지해, 이벤트 발생 시 현재 경로를 업데이트합니다.
+
+> Route.tsx
+```tsx
+export interface RouteProps {
+    path: string;
+    component: React.ReactNode;
+}
+
+const Route = ({ path, component }: RouteProps) => {
+    return window.location.pathname == path? <div>{component}</div> : null;
+}
+
+export default Route;
+```
+
+Route 컴포넌트는 path와 component를 받아 현재 경로와 일치하는 경우, 해당 컴포넌트를 렌더링하고, 그렇지 않은 경우 null을 반환합니다.
+
+> useRouter.tsx
+```tsx
+const useRouter = () => {
+    const push = (path: string):void => {
+        window.history.pushState(null, '', path)
+        window.dispatchEvent(new PopStateEvent("popstate"));
+    };
+    
+    return { push };
+}
+
+export default useRouter;
+```
+
+useRouter 커스텀 훅의 push 함수는 문자열 path를 받아서 window.history.pushState를 통해 URL을 변경합니다. 그리고 window.dispatchEvent를 사용해 **popstate 이벤트**를 발생시켜 Router 컴포넌트에서 이벤트를 감지하고 경로 전환을 통해 적절한 페이지를 렌더링 할 수 있도록 합니다.
